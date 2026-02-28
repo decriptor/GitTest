@@ -4,6 +4,8 @@ import store, { allVisibleCommits } from '../../stores/gitStore.js'
 import { computeLayout } from '../../utils/graphLayout.js'
 import CommitNode from './CommitNode.vue'
 import CommitConnection from './CommitConnection.vue'
+import BranchLabel from './BranchLabel.vue'
+import HeadPointer from './HeadPointer.vue'
 
 const selectedCommit = ref(null)
 
@@ -56,24 +58,29 @@ const layout = computed(() =>
         />
       </g>
 
-      <!-- Branch labels placeholder — will be replaced in Commit 11 -->
+      <!-- Branch labels -->
       <g class="labels">
-        <g v-for="label in layout.branchLabels" :key="label.name">
-          <foreignObject
-            :x="label.x - 40"
-            :y="label.y - 42"
-            width="80"
-            height="24"
-          >
-            <div
-              xmlns="http://www.w3.org/1999/xhtml"
-              class="text-[11px] font-mono font-semibold text-center rounded px-1 py-0.5 truncate"
-              :style="{ backgroundColor: label.color + '22', color: label.color, border: `1px solid ${label.color}44` }"
-            >
-              {{ label.name }}
-            </div>
-          </foreignObject>
-        </g>
+        <BranchLabel
+          v-for="label in layout.branchLabels"
+          :key="label.name"
+          :name="label.name"
+          :x="label.x"
+          :y="label.y"
+          :color="label.color"
+          :is-h-e-a-d="label.isHEAD"
+        />
+      </g>
+
+      <!-- HEAD pointer on active branch -->
+      <g class="head-pointers">
+        <template v-for="label in layout.branchLabels" :key="'head-' + label.name">
+          <HeadPointer
+            v-if="label.isHEAD"
+            :x="label.x"
+            :y="label.y"
+            :color="label.color"
+          />
+        </template>
       </g>
     </svg>
   </div>
