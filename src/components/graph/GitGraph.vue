@@ -1,7 +1,14 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import store, { allVisibleCommits } from '../../stores/gitStore.js'
 import { computeLayout } from '../../utils/graphLayout.js'
+import CommitNode from './CommitNode.vue'
+
+const selectedCommit = ref(null)
+
+function handleSelectCommit(sha) {
+  selectedCommit.value = selectedCommit.value === sha ? null : sha
+}
 
 const layout = computed(() =>
   computeLayout(allVisibleCommits.value, store.branches, store.HEAD)
@@ -33,27 +40,20 @@ const layout = computed(() =>
         />
       </g>
 
-      <!-- Placeholder commit circles — will be replaced by CommitNode in Commit 9 -->
+      <!-- Commit nodes -->
       <g class="nodes">
-        <g v-for="node in layout.nodes" :key="node.sha">
-          <circle
-            :cx="node.x"
-            :cy="node.y"
-            r="18"
-            :fill="node.color"
-            :opacity="node.isReplaced ? 0.25 : 1"
-            class="cursor-pointer"
-          />
-          <text
-            :x="node.x"
-            :y="node.y + 1"
-            text-anchor="middle"
-            dominant-baseline="central"
-            class="text-[10px] font-mono fill-gray-950 font-bold pointer-events-none select-none"
-          >
-            {{ node.sha.slice(0, 5) }}
-          </text>
-        </g>
+        <CommitNode
+          v-for="node in layout.nodes"
+          :key="node.sha"
+          :sha="node.sha"
+          :x="node.x"
+          :y="node.y"
+          :color="node.color"
+          :is-replaced="node.isReplaced"
+          :is-amended="node.isAmended"
+          :message="node.message"
+          @select="handleSelectCommit"
+        />
       </g>
 
       <!-- Branch labels placeholder — will be replaced in Commit 11 -->
