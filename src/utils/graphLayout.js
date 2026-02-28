@@ -86,22 +86,54 @@ export function computeLayout(commits, branches, HEAD) {
     }
   }
 
-  // Branch labels positioned at the tip commit of each branch
+  // Branch labels positioned at the tip commit of each branch.
+  // When multiple branches share the same commit, spread labels horizontally.
   const branchLabels = []
+  const labelsPerCommit = {}
+
   for (const [name, sha] of Object.entries(branches)) {
+    if (!labelsPerCommit[sha]) labelsPerCommit[sha] = []
+    labelsPerCommit[sha].push(name)
+  }
+
+  for (const [sha, names] of Object.entries(labelsPerCommit)) {
     const node = nodeMap[sha]
-    if (node) {
+    if (!node) continue
+
+    const count = names.length
+    // Sort so HEAD branch is first (leftmost), then alphabetical
+    names.sort((a, b) => {
+      if (a === HEAD) return -1
+      if (b === HEAD) return 1
+      return a.localeCompare(b)
+    })
+
+    const labelWidth = 95
+    const totalWidth = count * labelWidth
+    const startX = node.x - (totalWidth - labelWidth) / 2
+
+    names.forEach((name, i) => {
+      const labelX = startX + i * labelWidth
       branchLabels.push({
         name,
-        x: node.x,
+        x: labelX,
         y: node.y,
+        nodeX: node.x,  // actual commit node position
+        nodeY: node.y,
+        isOffset: count > 1,  // true when label is spread from shared commit
         color: getBranchColor(name, branchLanes),
         isHEAD: name === HEAD,
       })
-    }
+    })
   }
 
-  const maxX = Math.max(...nodes.map((n) => n.x), 0) + GRAPH_PADDING_X
+  const labelMaxX = branchLabels.length > 0
+    ? Math.max(...branchLabels.map((l) => l.x + 50))
+    : 0
+  const maxX = Math.max(
+    Math.max(...nodes.map((n) => n.x), 0) + GRAPH_PADDING_X,
+    labelMaxX + GRAPH_PADDING_X
+  )
   const maxY = Math.max(...nodes.map((n) => n.y), 0) + GRAPH_PADDING_Y
 
   return {

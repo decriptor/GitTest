@@ -80,6 +80,9 @@ const viewHeight = computed(() => {
             :name="label.name"
             :x="label.x"
             :y="label.y"
+            :node-x="label.nodeX"
+            :node-y="label.nodeY"
+            :is-offset="label.isOffset"
             :color="label.color"
             :is-h-e-a-d="label.isHEAD"
           />

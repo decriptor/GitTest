@@ -3,6 +3,9 @@ defineProps({
   name: String,
   x: Number,
   y: Number,
+  nodeX: Number,
+  nodeY: Number,
+  isOffset: Boolean,
   color: String,
   isHEAD: Boolean,
 })
@@ -10,6 +13,19 @@ defineProps({
 
 <template>
   <g class="branch-label">
+    <!-- Connector line from offset label down to the actual commit node -->
+    <line
+      v-if="isOffset"
+      :x1="x"
+      :y1="y - 20"
+      :x2="nodeX"
+      :y2="nodeY - 18"
+      :stroke="color"
+      stroke-width="1"
+      stroke-dasharray="3 2"
+      opacity="0.35"
+    />
+
     <foreignObject
       :x="x - 45"
       :y="y - 46"
