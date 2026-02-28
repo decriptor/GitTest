@@ -1,55 +1,71 @@
 <script setup>
-defineProps({
-  name: String,
+import { computed } from 'vue'
+
+const props = defineProps({
   x: Number,
   y: Number,
-  nodeX: Number,
-  nodeY: Number,
-  isOffset: Boolean,
-  color: String,
-  isHEAD: Boolean,
+  branches: Array, // [{ name, color, isHEAD }]
 })
+
+const hasHEAD = computed(() => props.branches.some((b) => b.isHEAD))
+const bubbleHeight = computed(() => 4 + props.branches.length * 22)
+const bubbleWidth = 100
 </script>
 
 <template>
-  <g class="branch-label">
-    <!-- Connector line from offset label down to the actual commit node -->
+  <g class="branch-label-group">
+    <!-- Connector line from bubble to commit node -->
     <line
-      v-if="isOffset"
       :x1="x"
       :y1="y - 20"
-      :x2="nodeX"
-      :y2="nodeY - 18"
-      :stroke="color"
+      :x2="x"
+      :y2="y - bubbleHeight - 6"
+      stroke="white"
       stroke-width="1"
-      stroke-dasharray="3 2"
-      opacity="0.35"
+      opacity="0.15"
     />
 
+    <!-- Bubble container -->
     <foreignObject
-      :x="x - 45"
-      :y="y - 46"
-      width="90"
-      height="28"
+      :x="x - bubbleWidth / 2"
+      :y="y - bubbleHeight - 24"
+      :width="bubbleWidth"
+      :height="bubbleHeight + 4"
     >
       <div
         xmlns="http://www.w3.org/1999/xhtml"
-        class="flex items-center justify-center gap-1 text-[11px] font-mono font-semibold rounded-md px-2 py-1 whitespace-nowrap"
+        class="rounded-lg border overflow-hidden"
         :style="{
-          backgroundColor: color + '18',
-          color: color,
-          border: `1.5px solid ${color}55`,
-          boxShadow: isHEAD ? `0 0 8px ${color}33` : 'none',
+          backgroundColor: 'rgba(17, 24, 39, 0.9)',
+          borderColor: hasHEAD ? 'rgba(255,255,255,0.15)' : 'rgba(255,255,255,0.08)',
+          boxShadow: hasHEAD ? '0 0 10px rgba(255,255,255,0.05)' : 'none',
         }"
       >
-        {{ name }}
+        <div
+          v-for="branch in branches"
+          :key="branch.name"
+          class="flex items-center gap-1.5 px-2 py-0.5 text-[10px] font-mono font-semibold whitespace-nowrap"
+          :style="{ color: branch.color }"
+        >
+          <span
+            class="w-1.5 h-1.5 rounded-full flex-shrink-0"
+            :style="{ backgroundColor: branch.color }"
+          ></span>
+          <span class="truncate">{{ branch.name }}</span>
+          <span
+            v-if="branch.isHEAD"
+            class="ml-auto text-[8px] font-bold opacity-60 flex-shrink-0"
+          >
+            HEAD
+          </span>
+        </div>
       </div>
     </foreignObject>
   </g>
 </template>
 
 <style scoped>
-.branch-label {
+.branch-label-group {
   animation: slide-down 0.3s ease-out forwards;
 }
 

@@ -5,7 +5,6 @@ import { computeLayout } from '../../utils/graphLayout.js'
 import CommitNode from './CommitNode.vue'
 import CommitConnection from './CommitConnection.vue'
 import BranchLabel from './BranchLabel.vue'
-import HeadPointer from './HeadPointer.vue'
 import CommitTooltip from './CommitTooltip.vue'
 
 const selectedCommit = ref(null)
@@ -72,32 +71,15 @@ const viewHeight = computed(() => {
           />
         </g>
 
-        <!-- Branch labels -->
+        <!-- Branch label bubbles (grouped per commit) -->
         <g class="labels">
           <BranchLabel
-            v-for="label in layout.branchLabels"
-            :key="label.name"
-            :name="label.name"
-            :x="label.x"
-            :y="label.y"
-            :node-x="label.nodeX"
-            :node-y="label.nodeY"
-            :is-offset="label.isOffset"
-            :color="label.color"
-            :is-h-e-a-d="label.isHEAD"
+            v-for="group in layout.branchLabelGroups"
+            :key="group.sha"
+            :x="group.x"
+            :y="group.y"
+            :branches="group.branches"
           />
-        </g>
-
-        <!-- HEAD pointer on active branch -->
-        <g class="head-pointers">
-          <template v-for="label in layout.branchLabels" :key="'head-' + label.name">
-            <HeadPointer
-              v-if="label.isHEAD"
-              :x="label.x"
-              :y="label.y"
-              :color="label.color"
-            />
-          </template>
         </g>
 
         <!-- Tooltip for selected commit -->
