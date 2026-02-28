@@ -38,6 +38,18 @@ export function computeLayout(commits, branches, HEAD) {
     }
   }
 
+  // Pre-compute the maximum branch label bubble height so we can
+  // derive the top padding needed BEFORE positioning nodes.
+  const labelsByCommitEarly = {}
+  for (const [, sha] of Object.entries(branches)) {
+    if (!labelsByCommitEarly[sha]) labelsByCommitEarly[sha] = 0
+    labelsByCommitEarly[sha]++
+  }
+  const maxBranchCount = Math.max(0, ...Object.values(labelsByCommitEarly))
+  const maxBubbleHeight = maxBranchCount > 0 ? 4 + maxBranchCount * 22 : 0
+  // 24px gap between bubble bottom and node + 6px extra margin
+  const effectivePaddingY = Math.max(GRAPH_PADDING_Y, maxBubbleHeight + 30)
+
   // Compute positions — X based on column index, Y based on lane
   const commitIndex = {}
   let col = 0
@@ -55,7 +67,7 @@ export function computeLayout(commits, branches, HEAD) {
       message: commit.message,
       branch: commit.branch,
       x: GRAPH_PADDING_X + colIdx * NODE_SPACING_X,
-      y: GRAPH_PADDING_Y + lane * NODE_SPACING_Y,
+      y: effectivePaddingY + lane * NODE_SPACING_Y,
       isReplaced: commit.replacedBy !== null,
       isAmended: commit.amended,
       color: getBranchColor(commit.branch, branchLanes),
@@ -120,7 +132,7 @@ export function computeLayout(commits, branches, HEAD) {
   }
 
   const maxX = Math.max(...nodes.map((n) => n.x), 0) + GRAPH_PADDING_X
-  const maxY = Math.max(...nodes.map((n) => n.y), 0) + GRAPH_PADDING_Y
+  const maxY = Math.max(...nodes.map((n) => n.y), 0) + effectivePaddingY
 
   return {
     nodes,
