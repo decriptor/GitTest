@@ -6,6 +6,7 @@ import CommitNode from './CommitNode.vue'
 import CommitConnection from './CommitConnection.vue'
 import BranchLabel from './BranchLabel.vue'
 import HeadPointer from './HeadPointer.vue'
+import CommitTooltip from './CommitTooltip.vue'
 
 const selectedCommit = ref(null)
 
@@ -16,6 +17,11 @@ function handleSelectCommit(sha) {
 const layout = computed(() =>
   computeLayout(allVisibleCommits.value, store.branches, store.HEAD)
 )
+
+const selectedNode = computed(() => {
+  if (!selectedCommit.value) return null
+  return layout.value.nodes.find((n) => n.sha === selectedCommit.value)
+})
 </script>
 
 <template>
@@ -82,6 +88,15 @@ const layout = computed(() =>
           />
         </template>
       </g>
+
+      <!-- Tooltip for selected commit -->
+      <CommitTooltip
+        v-if="selectedNode"
+        :sha="selectedNode.sha"
+        :x="selectedNode.x"
+        :y="selectedNode.y"
+        @close="selectedCommit = null"
+      />
     </svg>
   </div>
 </template>
