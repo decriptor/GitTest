@@ -4,6 +4,9 @@ import AppFooter from './components/layout/AppFooter.vue'
 import HeroSection from './components/hero/HeroSection.vue'
 import GitGraph from './components/graph/GitGraph.vue'
 import ControlPanel from './components/controls/ControlPanel.vue'
+import { useGitOperations } from './composables/useGitOperations.js'
+
+const { createCommit, createBranch, checkoutBranch, amendCommit, rebase, resetAll } = useGitOperations()
 
 function handleStartExploring() {
   // Will wire to walkthrough in a later commit
@@ -17,7 +20,14 @@ function handleStartExploring() {
       <HeroSection @start-exploring="handleStartExploring" />
 
       <section class="mt-12 space-y-6">
-        <ControlPanel />
+        <ControlPanel
+          @create-commit="createCommit()"
+          @create-branch="createBranch()"
+          @checkout="checkoutBranch"
+          @amend="amendCommit()"
+          @rebase="rebase()"
+          @reset="resetAll()"
+        />
         <h2 class="text-xl font-semibold text-gray-300">Commit Graph</h2>
         <GitGraph />
       </section>
