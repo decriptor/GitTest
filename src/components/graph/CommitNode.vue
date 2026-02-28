@@ -98,6 +98,10 @@ const emit = defineEmits(['select'])
 </template>
 
 <style scoped>
+.commit-node {
+  animation: spring-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
 .commit-node:hover .hover-glow {
   opacity: 0.5;
 }
@@ -106,8 +110,19 @@ const emit = defineEmits(['select'])
   animation: pulse-ring 2s ease-in-out infinite;
 }
 
+@keyframes spring-in {
+  from {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 @keyframes pulse-ring {
-  0%, 100% { opacity: 0.2; r: 22; }
-  50% { opacity: 0.5; r: 26; }
+  0%, 100% { opacity: 0.2; }
+  50% { opacity: 0.5; }
 }
 </style>
