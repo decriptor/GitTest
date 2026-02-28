@@ -5,6 +5,7 @@ import HeroSection from './components/hero/HeroSection.vue'
 import GitGraph from './components/graph/GitGraph.vue'
 import ControlPanel from './components/controls/ControlPanel.vue'
 import ProofPanel from './components/proof/ProofPanel.vue'
+import ExplanationPanel from './components/education/ExplanationPanel.vue'
 import { useGitOperations } from './composables/useGitOperations.js'
 
 const { createCommit, createBranch, checkoutBranch, amendCommit, rebase, resetAll } = useGitOperations()
@@ -31,7 +32,10 @@ function handleStartExploring() {
         />
         <h2 class="text-xl font-semibold text-gray-300">Commit Graph</h2>
         <GitGraph />
-        <ProofPanel />
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <ProofPanel />
+          <ExplanationPanel />
+        </div>
       </section>
     </main>
     <AppFooter />
