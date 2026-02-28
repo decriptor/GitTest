@@ -167,6 +167,21 @@ const commits = [
 ]
 
 const expandedCommit = ref(null)
+const timelineHover = ref(null)
+
+// The fork point: dev branched from main at commit 20, then filter-branch rewrote all 20
+const forkPoint = {
+  commitNum: 20,
+  mainSha: 'a80a9d3',
+  description: 'git checkout -b dev',
+}
+
+const timelineEvents = [
+  { id: 'build', label: '20 commits built on main', range: [1, 20], branch: 'main' },
+  { id: 'fork', label: 'git checkout -b dev', at: 20, type: 'fork' },
+  { id: 'filter', label: 'git filter-branch (remove attribution)', range: [1, 20], branch: 'dev' },
+  { id: 'result', label: 'No common ancestor — histories diverged', type: 'result' },
+]
 
 function toggleExpand(num) {
   expandedCommit.value = expandedCommit.value === num ? null : num
@@ -226,6 +241,108 @@ const stats = computed(() => ({
         </div>
       </div>
 
+      <!-- Visual Timeline: How dev branched from main -->
+      <div class="rounded-xl bg-surface-secondary border border-gray-800 p-6 mb-8 overflow-hidden">
+        <h3 class="text-[10px] font-semibold uppercase tracking-wider text-gray-500 mb-5">How dev branched from main</h3>
+
+        <div class="relative">
+          <!-- SVG Timeline -->
+          <svg viewBox="0 0 800 260" class="w-full max-w-3xl mx-auto" aria-label="Branch timeline diagram">
+            <defs>
+              <marker id="arrow-green" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="8" markerHeight="6" orient="auto">
+                <polygon points="0 0, 10 3.5, 0 7" fill="#22c55e" />
+              </marker>
+              <marker id="arrow-amber" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="8" markerHeight="6" orient="auto">
+                <polygon points="0 0, 10 3.5, 0 7" fill="#f59e0b" />
+              </marker>
+              <marker id="arrow-red" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="8" markerHeight="6" orient="auto">
+                <polygon points="0 0, 10 3.5, 0 7" fill="#ef4444" />
+              </marker>
+            </defs>
+
+            <!-- Step 1: main branch line (commits 1-20) -->
+            <g>
+              <text x="30" y="38" class="text-[11px] fill-gray-500 font-semibold" text-anchor="start">Step 1</text>
+              <text x="100" y="38" class="text-[11px] fill-gray-400" text-anchor="start">Build 20 commits on main</text>
+
+              <!-- main line -->
+              <line x1="100" y1="55" x2="620" y2="55" stroke="#22c55e" stroke-width="2.5" marker-end="url(#arrow-green)" />
+
+              <!-- Commit dots on main -->
+              <circle v-for="i in 20" :key="'m'+i" :cx="100 + (i-1) * 27.4" cy="55" r="4" fill="#22c55e" :opacity="i === 1 || i === 20 ? 1 : 0.4" />
+
+              <!-- Labels at key commits -->
+              <text x="100" y="75" class="text-[9px] fill-brand-green font-mono" text-anchor="middle">c1</text>
+              <text x="620" y="75" class="text-[9px] fill-brand-green font-mono" text-anchor="middle">c20</text>
+
+              <!-- Branch label -->
+              <rect x="635" y="45" width="50" height="20" rx="4" fill="#22c55e" fill-opacity="0.15" stroke="#22c55e" stroke-opacity="0.3" />
+              <text x="660" y="59" class="text-[10px] fill-brand-green font-mono font-semibold" text-anchor="middle">main</text>
+            </g>
+
+            <!-- Step 2: Fork point -->
+            <g>
+              <text x="30" y="112" class="text-[11px] fill-gray-500 font-semibold" text-anchor="start">Step 2</text>
+              <text x="100" y="112" class="text-[11px] fill-gray-400" text-anchor="start">git checkout -b dev (branch from tip)</text>
+
+              <!-- main line (faded continuation) -->
+              <line x1="100" y1="128" x2="620" y2="128" stroke="#22c55e" stroke-width="2" opacity="0.3" />
+              <circle cx="620" cy="128" r="5" fill="#22c55e" stroke="#22c55e" stroke-width="1.5" fill-opacity="0.3" />
+
+              <!-- Fork arrow curving down from commit 20 -->
+              <path d="M 620 128 C 640 128, 650 148, 650 158" stroke="#f59e0b" stroke-width="2.5" fill="none" stroke-dasharray="4 3" />
+              <circle cx="650" cy="158" r="5" fill="#f59e0b" />
+
+              <!-- Fork label -->
+              <rect x="660" y="148" width="110" height="20" rx="4" fill="#f59e0b" fill-opacity="0.1" stroke="#f59e0b" stroke-opacity="0.3" />
+              <text x="715" y="162" class="text-[9px] fill-brand-amber font-mono" text-anchor="middle">checkout -b dev</text>
+
+              <!-- Fork indicator -->
+              <circle cx="620" cy="128" r="8" fill="none" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="3 2" opacity="0.6" />
+            </g>
+
+            <!-- Step 3: filter-branch rewrites dev -->
+            <g>
+              <text x="30" y="205" class="text-[11px] fill-gray-500 font-semibold" text-anchor="start">Step 3</text>
+              <text x="100" y="205" class="text-[11px] fill-gray-400" text-anchor="start">git filter-branch rewrites every commit on dev</text>
+
+              <!-- main line (unchanged, solid) -->
+              <line x1="100" y1="222" x2="620" y2="222" stroke="#22c55e" stroke-width="2.5" />
+              <circle v-for="i in 20" :key="'m2'+i" :cx="100 + (i-1) * 27.4" cy="222" r="3" fill="#22c55e" opacity="0.5" />
+              <rect x="635" y="212" width="50" height="20" rx="4" fill="#22c55e" fill-opacity="0.15" stroke="#22c55e" stroke-opacity="0.3" />
+              <text x="660" y="226" class="text-[10px] fill-brand-green font-mono font-semibold" text-anchor="middle">main</text>
+
+              <!-- dev line (all new SHAs, below main) -->
+              <line x1="100" y1="248" x2="620" y2="248" stroke="#f59e0b" stroke-width="2.5" />
+              <circle v-for="i in 20" :key="'d2'+i" :cx="100 + (i-1) * 27.4" cy="248" r="3" fill="#f59e0b" opacity="0.5" />
+              <rect x="635" y="238" width="42" height="20" rx="4" fill="#f59e0b" fill-opacity="0.15" stroke="#f59e0b" stroke-opacity="0.3" />
+              <text x="656" y="252" class="text-[10px] fill-brand-amber font-mono font-semibold" text-anchor="middle">dev</text>
+
+              <!-- X marks — no connection between the two lines -->
+              <g opacity="0.5">
+                <line x1="85" y1="230" x2="93" y2="240" stroke="#ef4444" stroke-width="1.5" />
+                <line x1="93" y1="230" x2="85" y2="240" stroke="#ef4444" stroke-width="1.5" />
+              </g>
+              <text x="50" y="238" class="text-[8px] fill-red-400" text-anchor="middle">no common</text>
+              <text x="50" y="247" class="text-[8px] fill-red-400" text-anchor="middle">ancestor</text>
+
+              <!-- Correspondence dotted lines between matching commits -->
+              <line v-for="i in [1, 10, 20]" :key="'corr'+i" :x1="100 + (i-1) * 27.4" y1="225" :x2="100 + (i-1) * 27.4" y2="245" stroke="#6b7280" stroke-width="1" stroke-dasharray="2 2" opacity="0.4" />
+            </g>
+          </svg>
+
+          <!-- Text callout below timeline -->
+          <div class="mt-4 mx-auto max-w-3xl px-3 py-2.5 rounded-lg bg-red-500/8 border border-red-500/15">
+            <p class="text-[11px] text-red-400 text-center">
+              <strong class="text-red-300">git merge-base main dev</strong> returns nothing.
+              Because <code class="bg-red-500/10 px-1 rounded">filter-branch</code> rewrote every commit
+              (including the root), Git sees these as <strong>completely unrelated histories</strong> with no shared ancestor.
+              The fork point at commit 20 was erased when all parent hashes changed.
+            </p>
+          </div>
+        </div>
+      </div>
+
       <!-- Legend -->
       <div class="flex flex-wrap gap-4 mb-6 text-xs text-gray-500">
         <div class="flex items-center gap-1.5">
@@ -265,7 +382,15 @@ const stats = computed(() => ({
 
             <div class="flex-1 min-w-0">
               <!-- Subject line (identical on both) -->
-              <p class="font-semibold text-sm text-gray-200 truncate">{{ commit.subject }}</p>
+              <div class="flex items-center gap-2">
+                <p class="font-semibold text-sm text-gray-200 truncate">{{ commit.subject }}</p>
+                <!-- Correspondence badge -->
+                <span class="flex-shrink-0 text-[9px] font-mono font-semibold px-1.5 py-0.5 rounded bg-surface-tertiary text-gray-500 border border-gray-700"
+                  :title="`main commit #${commit.num} corresponds to dev commit #${commit.num} — same code, different SHA`"
+                >
+                  main:#{{ commit.num }} &harr; dev:#{{ commit.num }}
+                </span>
+              </div>
 
               <!-- SHA comparison row -->
               <div class="mt-2 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
@@ -335,13 +460,23 @@ const stats = computed(() => ({
                 </div>
               </div>
 
+              <!-- File content status -->
+              <div class="mt-4 flex items-center gap-3 px-3 py-2 rounded-lg bg-green-500/8 border border-green-500/15">
+                <span class="flex-shrink-0 w-5 h-5 rounded-full bg-green-500/20 flex items-center justify-center text-[10px] text-brand-green font-bold">&#10003;</span>
+                <p class="text-[11px] text-green-400">
+                  <strong class="text-green-300">File content identical.</strong>
+                  The tree (file snapshot) for this commit is byte-for-byte the same on both branches.
+                  Only the commit metadata (message, parent hash) differs.
+                </p>
+              </div>
+
               <!-- Explanation callout -->
-              <div class="mt-4 px-3 py-2 rounded-lg bg-blue-500/8 border border-blue-500/15">
+              <div class="mt-2 px-3 py-2 rounded-lg bg-blue-500/8 border border-blue-500/15">
                 <p class="text-[11px] text-blue-400">
                   <strong class="text-blue-300">Why do the SHAs differ?</strong>
                   A commit's SHA hash is derived from its content <em>and</em> metadata (message, author, timestamp, parent hash).
-                  Removing the co-author trailer changed the message, which cascaded through every subsequent commit since each commit's
-                  parent hash changed too.
+                  Removing the co-author trailer changed the message<template v-if="commit.num > 1">, and since this commit's parent hash
+                  (commit #{{ commit.num - 1 }}) also changed, the difference cascades</template>.
                 </p>
               </div>
             </div>
