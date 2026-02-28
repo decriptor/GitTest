@@ -1,9 +1,9 @@
 // Graph layout dimensions
 export const NODE_RADIUS = 20
-export const NODE_SPACING_X = 120
+export const NODE_SPACING_X = 100
 export const NODE_SPACING_Y = 80
-export const GRAPH_PADDING_X = 60
-export const GRAPH_PADDING_Y = 50
+export const GRAPH_PADDING_X = 50
+export const GRAPH_PADDING_Y = 80  // room for HEAD pointer + branch label above nodes
 
 // Branch colors
 export const BRANCH_COLORS = {

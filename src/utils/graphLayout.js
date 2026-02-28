@@ -101,8 +101,8 @@ export function computeLayout(commits, branches, HEAD) {
     }
   }
 
-  const maxX = Math.max(...nodes.map((n) => n.x), 0) + GRAPH_PADDING_X + 60
-  const maxY = Math.max(...nodes.map((n) => n.y), 0) + GRAPH_PADDING_Y + 60
+  const maxX = Math.max(...nodes.map((n) => n.x), 0) + GRAPH_PADDING_X
+  const maxY = Math.max(...nodes.map((n) => n.y), 0) + GRAPH_PADDING_Y
 
   return {
     nodes,
