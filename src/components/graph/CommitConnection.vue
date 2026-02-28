@@ -52,5 +52,6 @@ const pathLength = computed(() => {
 .commit-connection {
   stroke-dasharray: var(--path-length);
   stroke-dashoffset: 0;
+  animation: draw-connection 0.5s ease-out forwards;
 }
 </style>

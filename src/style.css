@@ -9,3 +9,67 @@
   --color-surface-secondary: #111827;
   --color-surface-tertiary: #1f2937;
 }
+
+/* Vue transition classes */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.slide-up-enter-active,
+.slide-up-leave-active {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.slide-up-enter-from {
+  opacity: 0;
+  transform: translateY(20px);
+}
+.slide-up-leave-to {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.scale-in-enter-active {
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.scale-in-leave-active {
+  transition: all 0.2s ease;
+}
+.scale-in-enter-from {
+  opacity: 0;
+  transform: scale(0.8);
+}
+.scale-in-leave-to {
+  opacity: 0;
+  transform: scale(0.95);
+}
+
+/* Connection draw animation */
+@keyframes draw-connection {
+  from { stroke-dashoffset: var(--path-length); }
+  to { stroke-dashoffset: 0; }
+}
+
+/* Proof panel flash */
+@keyframes proof-flash {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+  50% { box-shadow: 0 0 20px 4px rgba(34, 197, 94, 0.3); }
+}
+
+.proof-flash {
+  animation: proof-flash 0.6s ease-out;
+}
+
+/* Confetti burst keyframes */
+@keyframes confetti-fall {
+  0% { transform: translateY(-10px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(40px) rotate(360deg); opacity: 0; }
+}
+
+.confetti-particle {
+  animation: confetti-fall 1s ease-out forwards;
+}
