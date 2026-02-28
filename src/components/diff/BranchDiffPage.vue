@@ -3,7 +3,8 @@ import { ref, computed } from 'vue'
 
 const emit = defineEmits(['back'])
 
-const commits = [
+// Commits shared between both branches (1-20): same code, different SHAs
+const sharedCommits = [
   {
     num: 1,
     subject: 'Initialize Vue 3 + Vite project',
@@ -11,6 +12,7 @@ const commits = [
     main: { sha: 'f3305809c95af6480c12a77bdf1136e10dbf8932', short: 'f330580' },
     dev:  { sha: 'd58b575f50ef81fd6414cc9f37eaa174d6d8a0ad', short: 'd58b575' },
     attribution: 'Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>',
+    type: 'shared',
   },
   {
     num: 2,
@@ -19,6 +21,7 @@ const commits = [
     main: { sha: '72db9dcbbec242fc8e10045c7c64efa5ecbaf2e4', short: '72db9dc' },
     dev:  { sha: '5e023bc325a3bb110ea0e0c3330080aadf5b741f', short: '5e023bc' },
     attribution: 'Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>',
+    type: 'shared',
   },
   {
     num: 3,
@@ -27,6 +30,7 @@ const commits = [
     main: { sha: '24b8f0ac76b65911ed22619e997f7fb440184f4f', short: '24b8f0a' },
     dev:  { sha: '4a69e1ae1bceb9a5daca7659d6b5e3071cdce1c3', short: '4a69e1a' },
     attribution: 'Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>',
+    type: 'shared',
   },
   {
     num: 4,
@@ -35,6 +39,7 @@ const commits = [
     main: { sha: '4366432f1f35de17a0918a3d90272920325afd3d', short: '4366432' },
     dev:  { sha: '7ddce8b51e4c0dbddf2471471136851835c5fd81', short: '7ddce8b' },
     attribution: 'Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>',
+    type: 'shared',
   },
   {
     num: 5,
@@ -43,6 +48,7 @@ const commits = [
     main: { sha: 'c493d0adc19f09eb6598a947de1de8bc47ad63ea', short: 'c493d0a' },
     dev:  { sha: 'ecd35f7078ccc7a2ad18a8fc0a1bdeb029f5c6de', short: 'ecd35f7' },
     attribution: 'Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>',
+    type: 'shared',
   },
   {
     num: 6,
@@ -51,6 +57,7 @@ const commits = [
     main: { sha: '10d1c815071d5a6f6675f8c61ff65a10d0b0ddc0', short: '10d1c81' },
     dev:  { sha: 'e15d75bc9b9cf231090d6f06f59722a0e117d154', short: 'e15d75b' },
     attribution: 'Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>',
+    type: 'shared',
   },
   {
     num: 7,
@@ -59,6 +66,7 @@ const commits = [
     main: { sha: '81e977f0fe75348237f1747d7988c909d6e5b07f', short: '81e977f' },
     dev:  { sha: '1dd77074ef769de83845c45be92eb9efdbd4c2cb', short: '1dd7707' },
     attribution: 'Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>',
+    type: 'shared',
   },
   {
     num: 8,
@@ -67,6 +75,7 @@ const commits = [
     main: { sha: 'a56fabb2e58b6fe497194e1ca29450ce29f54525', short: 'a56fabb' },
     dev:  { sha: 'bde973e220e8e5a603dbec0b08c2afd38f3f5ea9', short: 'bde973e' },
     attribution: 'Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>',
+    type: 'shared',
   },
   {
     num: 9,
@@ -75,6 +84,7 @@ const commits = [
     main: { sha: '5391da6a4c1a10b11aa5ac71fafd059d65980fbf', short: '5391da6' },
     dev:  { sha: 'd43c97f191e4da5a8e94a172e2411033389bb5d0', short: 'd43c97f' },
     attribution: 'Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>',
+    type: 'shared',
   },
   {
     num: 10,
@@ -83,6 +93,7 @@ const commits = [
     main: { sha: '840a291fccd27a821c2ef375bc906da51379df10', short: '840a291' },
     dev:  { sha: 'ba42f7dc15eaf9addb46788e87e1f22b7bc2067b', short: 'ba42f7d' },
     attribution: 'Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>',
+    type: 'shared',
   },
   {
     num: 11,
@@ -91,6 +102,7 @@ const commits = [
     main: { sha: 'dea50b43d939d1f74315e7405287deb1d39b1e5b', short: 'dea50b4' },
     dev:  { sha: 'b490179690f448e021457cf044e4a2bdba0d7418', short: 'b490179' },
     attribution: 'Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>',
+    type: 'shared',
   },
   {
     num: 12,
@@ -99,6 +111,7 @@ const commits = [
     main: { sha: 'e1dad0157201107472f58ec20fbcbeb6952d2e22', short: 'e1dad01' },
     dev:  { sha: 'd83d0647dda7a6f391bd09372b430166fb6fe82c', short: 'd83d064' },
     attribution: 'Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>',
+    type: 'shared',
   },
   {
     num: 13,
@@ -107,6 +120,7 @@ const commits = [
     main: { sha: '8da6d0c551736730166bb91012b334d2ea37bddc', short: '8da6d0c' },
     dev:  { sha: '51700337b974a91b2e0c6f6f74f8726094aefa01', short: '5170033' },
     attribution: 'Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>',
+    type: 'shared',
   },
   {
     num: 14,
@@ -115,6 +129,7 @@ const commits = [
     main: { sha: '3db8b6e71813ea45499c44955f0554c6070d9520', short: '3db8b6e' },
     dev:  { sha: 'f56066bf51c0132abb3253eeeb78bcb29f97afcb', short: 'f56066b' },
     attribution: 'Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>',
+    type: 'shared',
   },
   {
     num: 15,
@@ -123,6 +138,7 @@ const commits = [
     main: { sha: 'a0b7512d212c97ccc55d52d43a44791c8d88c1b1', short: 'a0b7512' },
     dev:  { sha: '0e483852148ca7239185e29249ba21d71411c0a4', short: '0e48385' },
     attribution: 'Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>',
+    type: 'shared',
   },
   {
     num: 16,
@@ -131,6 +147,7 @@ const commits = [
     main: { sha: '91a582a944358b64c31721ed3ed560e3dda77531', short: '91a582a' },
     dev:  { sha: '96033a3ae951bd8db05a33f7d24493bacfc0dc5f', short: '96033a3' },
     attribution: 'Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>',
+    type: 'shared',
   },
   {
     num: 17,
@@ -139,6 +156,7 @@ const commits = [
     main: { sha: '421cd52df9d951ec3daeb0a94066b2e08a9fcdc1', short: '421cd52' },
     dev:  { sha: '5f7cacecebfcba11480093f51c8d4fcdd53450fc', short: '5f7cace' },
     attribution: 'Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>',
+    type: 'shared',
   },
   {
     num: 18,
@@ -147,6 +165,7 @@ const commits = [
     main: { sha: '916064cbad2e8cab02cf5b3b38fab63f0e914d5a', short: '916064c' },
     dev:  { sha: '6c4eb378f836d50c4fb1d17e8d87199a1c2543fb', short: '6c4eb37' },
     attribution: 'Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>',
+    type: 'shared',
   },
   {
     num: 19,
@@ -155,6 +174,7 @@ const commits = [
     main: { sha: 'dab01fcc7dcde0c498f5bc5c32552969d5177537', short: 'dab01fc' },
     dev:  { sha: 'bf96741485913b014303e90c941fa3c9755405ff', short: 'bf96741' },
     attribution: 'Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>',
+    type: 'shared',
   },
   {
     num: 20,
@@ -163,8 +183,57 @@ const commits = [
     main: { sha: 'a80a9d3a72dec17f2eabcc24a6c1b4679ab45268', short: 'a80a9d3' },
     dev:  { sha: 'a907d638926cf5247b464bf8e078535111b38082', short: 'a907d63' },
     attribution: 'Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>',
+    type: 'shared',
   },
 ]
+
+// Commits that exist only on dev (21-26): added after filter-branch diverged histories
+const devOnlyCommits = [
+  {
+    num: 21,
+    subject: 'Add Branch Diff page comparing main vs dev commits',
+    body: 'New BranchDiffPage shows all 20 commits side-by-side with SHA\nhashes from both branches. Expandable rows reveal full SHA, commit\nmessage diff with removed attribution highlighted in red, and an\nexplanation of why SHAs cascade. Accessible from main page via CTA.',
+    dev: { sha: 'a5b8a7a8429b1688499c48aee61e061d1b780fcc', short: 'a5b8a7a' },
+    type: 'dev-only',
+  },
+  {
+    num: 22,
+    subject: 'Add branch history timeline and commit correspondence markers',
+    body: 'Visual SVG timeline showing 3 steps: 20 commits built on main,\ngit checkout -b dev at the tip, then filter-branch rewriting all\ncommits and severing shared ancestry. Red callout explains that\ngit merge-base returns nothing. Per-commit correspondence badges\nand "file content identical" indicators in expanded view.',
+    dev: { sha: '77968173d84c2f67a70446ec8c5ea9ed74de2c39', short: '7796817' },
+    type: 'dev-only',
+  },
+  {
+    num: 23,
+    subject: 'Fix commit graph rendering inside card container',
+    body: 'The SVG was overflowing the card because explicit pixel width/height\nattributes grew unbounded. Now the outer card clips with overflow-hidden,\nan inner div handles horizontal scrolling, and the SVG scales via\nviewBox. Increased GRAPH_PADDING_Y to 80 for HEAD pointer and branch\nlabel clearance. ViewBox height expands when tooltip is open.',
+    dev: { sha: '93b2429dfa8d70adb95ce8afafa80db9dc94440e', short: '93b2429' },
+    type: 'dev-only',
+  },
+  {
+    num: 24,
+    subject: 'Spread overlapping branch labels horizontally',
+    body: 'When multiple branches point to the same commit, labels now fan out\nside-by-side instead of stacking on top of each other. HEAD branch\nsorts leftmost. Dashed connector lines show which commit each offset\nlabel belongs to. Width calculation accounts for spread labels.',
+    dev: { sha: 'be41550bb542a5a36fa3c5c34c34ef891efdf2aa', short: 'be41550' },
+    type: 'dev-only',
+  },
+  {
+    num: 25,
+    subject: 'Redesign branch labels as grouped bubble with stacked names',
+    body: 'When multiple branches share a commit, they now render as a single\nbubble above the node with branch names stacked in columns. Each\nrow shows a color dot, branch name, and HEAD badge if active. A\nthin connector line links the bubble to the commit node. Replaces\nthe horizontal spread approach.',
+    dev: { sha: '06e5040616e435644edb3078d9eea3636831e3cd', short: '06e5040' },
+    type: 'dev-only',
+  },
+  {
+    num: 26,
+    subject: 'Fix branch label bubble overflow with dynamic top padding',
+    body: 'Compute the maximum bubble height from branch label groups before\npositioning nodes, so the viewBox always has enough room above\nlane-0 commits to contain the tallest stacked label bubble.',
+    dev: { sha: '4f0f8386a259e9380505a5d4e6c9b8eac658e857', short: '4f0f838' },
+    type: 'dev-only',
+  },
+]
+
+const commits = [...sharedCommits, ...devOnlyCommits]
 
 const expandedCommit = ref(null)
 const timelineHover = ref(null)
@@ -180,6 +249,7 @@ const timelineEvents = [
   { id: 'build', label: '20 commits built on main', range: [1, 20], branch: 'main' },
   { id: 'fork', label: 'git checkout -b dev', at: 20, type: 'fork' },
   { id: 'filter', label: 'git filter-branch (remove attribution)', range: [1, 20], branch: 'dev' },
+  { id: 'devonly', label: '6 new commits on dev only', range: [21, 26], branch: 'dev' },
   { id: 'result', label: 'No common ancestor — histories diverged', type: 'result' },
 ]
 
@@ -189,8 +259,10 @@ function toggleExpand(num) {
 
 const stats = computed(() => ({
   total: commits.length,
-  shaChanges: commits.filter((c) => c.main.sha !== c.dev.sha).length,
-  messageChanges: commits.length, // all have attribution removed
+  shared: sharedCommits.length,
+  devOnly: devOnlyCommits.length,
+  shaChanges: sharedCommits.filter((c) => c.main.sha !== c.dev.sha).length,
+  messageChanges: sharedCommits.length, // all shared commits have attribution removed
 }))
 </script>
 
@@ -222,21 +294,30 @@ const stats = computed(() => ({
           The <code class="text-brand-amber font-mono bg-surface-tertiary px-1.5 py-0.5 rounded">dev</code> branch
           was created from <code class="text-brand-green font-mono bg-surface-tertiary px-1.5 py-0.5 rounded">main</code>
           with all commit attribution removed. Same file content, different commit metadata &mdash; resulting in
-          entirely different SHA hashes.
+          entirely different SHA hashes. Since then, <strong class="text-brand-amber">{{ stats.devOnly }} additional commits</strong>
+          have been made exclusively on dev.
         </p>
 
         <div class="flex flex-wrap gap-4">
           <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-tertiary text-sm">
-            <span class="text-gray-500">Commits:</span>
+            <span class="text-gray-500">Total commits:</span>
             <span class="font-semibold">{{ stats.total }}</span>
+          </div>
+          <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-surface-tertiary text-sm">
+            <span class="text-gray-500">Shared (both branches):</span>
+            <span class="font-semibold">{{ stats.shared }}</span>
+          </div>
+          <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-brand-amber/10 border border-brand-amber/20 text-sm">
+            <span class="text-brand-amber">Dev-only:</span>
+            <span class="font-semibold text-amber-300">{{ stats.devOnly }}</span>
           </div>
           <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-sm">
             <span class="text-red-400">SHA changes:</span>
-            <span class="font-semibold text-red-300">{{ stats.shaChanges }} / {{ stats.total }}</span>
+            <span class="font-semibold text-red-300">{{ stats.shaChanges }} / {{ stats.shared }}</span>
           </div>
           <div class="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-sm">
-            <span class="text-amber-400">Message changes:</span>
-            <span class="font-semibold text-amber-300">{{ stats.messageChanges }} / {{ stats.total }}</span>
+            <span class="text-amber-400">Attribution removed:</span>
+            <span class="font-semibold text-amber-300">{{ stats.messageChanges }} / {{ stats.shared }}</span>
           </div>
         </div>
       </div>
@@ -247,7 +328,7 @@ const stats = computed(() => ({
 
         <div class="relative">
           <!-- SVG Timeline -->
-          <svg viewBox="0 0 800 260" class="w-full max-w-3xl mx-auto" aria-label="Branch timeline diagram">
+          <svg viewBox="0 0 800 340" class="w-full max-w-3xl mx-auto" aria-label="Branch timeline diagram">
             <defs>
               <marker id="arrow-green" viewBox="0 0 10 7" refX="10" refY="3.5" markerWidth="8" markerHeight="6" orient="auto">
                 <polygon points="0 0, 10 3.5, 0 7" fill="#22c55e" />
@@ -329,6 +410,34 @@ const stats = computed(() => ({
               <!-- Correspondence dotted lines between matching commits -->
               <line v-for="i in [1, 10, 20]" :key="'corr'+i" :x1="100 + (i-1) * 27.4" y1="225" :x2="100 + (i-1) * 27.4" y2="245" stroke="#6b7280" stroke-width="1" stroke-dasharray="2 2" opacity="0.4" />
             </g>
+
+            <!-- Step 4: Dev-only commits (21-26) -->
+            <g>
+              <text x="30" y="285" class="text-[11px] fill-gray-500 font-semibold" text-anchor="start">Step 4</text>
+              <text x="100" y="285" class="text-[11px] fill-gray-400" text-anchor="start">6 new commits added only on dev</text>
+
+              <!-- main line (unchanged, ends at c20) -->
+              <line x1="100" y1="302" x2="620" y2="302" stroke="#22c55e" stroke-width="2" opacity="0.25" />
+              <circle v-for="i in 20" :key="'m3'+i" :cx="100 + (i-1) * 27.4" cy="302" r="2.5" fill="#22c55e" opacity="0.25" />
+              <rect x="635" y="292" width="50" height="20" rx="4" fill="#22c55e" fill-opacity="0.1" stroke="#22c55e" stroke-opacity="0.2" />
+              <text x="660" y="306" class="text-[10px] fill-brand-green font-mono font-semibold" text-anchor="middle" opacity="0.5">main</text>
+
+              <!-- dev line (20 rewritten + 6 new) -->
+              <line x1="100" y1="325" x2="620" y2="325" stroke="#f59e0b" stroke-width="2" opacity="0.3" />
+              <circle v-for="i in 20" :key="'d3'+i" :cx="100 + (i-1) * 27.4" cy="325" r="2.5" fill="#f59e0b" opacity="0.3" />
+
+              <!-- 6 new commits extending beyond main (bright, emphasized) -->
+              <line x1="620" y1="325" x2="770" y2="325" stroke="#f59e0b" stroke-width="2.5" marker-end="url(#arrow-amber)" />
+              <circle v-for="i in 6" :key="'dn'+i" :cx="620 + i * 23" cy="325" r="4" fill="#f59e0b" />
+
+              <!-- Labels for new commits -->
+              <text x="643" y="318" class="text-[8px] fill-brand-amber font-mono" text-anchor="middle">c21</text>
+              <text x="758" y="318" class="text-[8px] fill-brand-amber font-mono" text-anchor="middle">c26</text>
+
+              <!-- New commit bracket -->
+              <rect x="630" y="330" width="148" height="16" rx="3" fill="#f59e0b" fill-opacity="0.1" stroke="#f59e0b" stroke-opacity="0.25" />
+              <text x="704" y="342" class="text-[8px] fill-brand-amber font-semibold" text-anchor="middle">dev-only (UI fixes &amp; features)</text>
+            </g>
           </svg>
 
           <!-- Text callout below timeline -->
@@ -358,15 +467,20 @@ const stats = computed(() => ({
           Changed / removed
         </div>
         <div class="flex items-center gap-1.5">
+          <span class="w-3 h-3 rounded bg-brand-amber/30 border border-brand-amber/50"></span>
+          Dev-only
+        </div>
+        <div class="flex items-center gap-1.5">
           <span class="w-3 h-3 rounded bg-gray-700 border border-gray-600"></span>
           Identical
         </div>
       </div>
 
-      <!-- Commit comparison list -->
-      <div class="space-y-3">
+      <!-- Shared commits section (1-20) -->
+      <h3 class="text-[10px] font-semibold uppercase tracking-wider text-gray-500 mb-3">Shared Commits (1&ndash;20) &mdash; Same code, different SHAs</h3>
+      <div class="space-y-3 mb-8">
         <div
-          v-for="commit in commits"
+          v-for="commit in sharedCommits"
           :key="commit.num"
           class="rounded-xl bg-surface-secondary border border-gray-800 overflow-hidden transition-all duration-200 hover:border-gray-700"
         >
@@ -484,15 +598,107 @@ const stats = computed(() => ({
         </div>
       </div>
 
+      <!-- Dev-only commits section (21-26) -->
+      <h3 class="text-[10px] font-semibold uppercase tracking-wider text-gray-500 mb-3">Dev-Only Commits (21&ndash;26) &mdash; Not on main</h3>
+      <div class="space-y-3">
+        <div
+          v-for="commit in devOnlyCommits"
+          :key="commit.num"
+          class="rounded-xl bg-surface-secondary border border-brand-amber/20 overflow-hidden transition-all duration-200 hover:border-brand-amber/40"
+        >
+          <!-- Commit row header -->
+          <button
+            class="w-full text-left px-4 sm:px-6 py-4 flex items-start gap-4 cursor-pointer"
+            @click="toggleExpand(commit.num)"
+          >
+            <!-- Commit number -->
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-brand-amber/15 border border-brand-amber/30 flex items-center justify-center text-xs font-bold text-brand-amber">
+              {{ commit.num }}
+            </div>
+
+            <div class="flex-1 min-w-0">
+              <!-- Subject line -->
+              <div class="flex items-center gap-2">
+                <p class="font-semibold text-sm text-gray-200 truncate">{{ commit.subject }}</p>
+                <span class="flex-shrink-0 text-[9px] font-semibold px-1.5 py-0.5 rounded bg-brand-amber/10 text-brand-amber border border-brand-amber/25">
+                  dev only
+                </span>
+              </div>
+
+              <!-- SHA row (dev only) -->
+              <div class="mt-2 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[10px] font-semibold uppercase tracking-wider text-gray-600 w-10">main</span>
+                  <span class="text-xs font-mono px-2 py-0.5 rounded bg-gray-800/50 text-gray-600 border border-gray-800">
+                    &mdash;
+                  </span>
+                </div>
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[10px] font-semibold uppercase tracking-wider text-brand-amber w-10">dev</span>
+                  <code class="text-xs font-mono px-2 py-0.5 rounded bg-brand-amber/10 text-brand-amber border border-brand-amber/20">
+                    {{ commit.dev.short }}
+                  </code>
+                </div>
+                <span class="ml-auto text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-brand-amber/10 text-brand-amber border border-brand-amber/20">
+                  new on dev
+                </span>
+              </div>
+            </div>
+
+            <!-- Expand indicator -->
+            <div class="flex-shrink-0 text-gray-600 mt-1 transition-transform duration-200" :class="{ 'rotate-180': expandedCommit === commit.num }">
+              &#9662;
+            </div>
+          </button>
+
+          <!-- Expanded detail view -->
+          <Transition name="slide-up">
+            <div v-if="expandedCommit === commit.num" class="border-t border-brand-amber/15 px-4 sm:px-6 py-5">
+              <!-- Full SHA -->
+              <div class="mb-5">
+                <h4 class="text-[10px] font-semibold uppercase tracking-wider text-gray-500 mb-2">Full SHA Hash</h4>
+                <div class="px-3 py-2 rounded-lg bg-brand-amber/5 border border-brand-amber/15">
+                  <span class="text-[10px] text-brand-amber font-semibold uppercase">dev</span>
+                  <code class="block mt-1 text-xs font-mono text-brand-amber break-all">{{ commit.dev.sha }}</code>
+                </div>
+              </div>
+
+              <!-- Commit message -->
+              <div>
+                <h4 class="text-[10px] font-semibold uppercase tracking-wider text-gray-500 mb-2">Commit Message</h4>
+                <div class="rounded-lg bg-gray-950 border border-gray-800 font-mono text-xs overflow-hidden">
+                  <div class="px-4 py-1.5 border-b border-gray-800/50 text-gray-300">
+                    {{ commit.subject }}
+                  </div>
+                  <div class="px-4 py-1.5 text-gray-500 whitespace-pre-line">{{ commit.body }}</div>
+                </div>
+              </div>
+
+              <!-- Dev-only explanation -->
+              <div class="mt-4 px-3 py-2 rounded-lg bg-brand-amber/8 border border-brand-amber/15">
+                <p class="text-[11px] text-amber-400">
+                  <strong class="text-amber-300">Dev-only commit.</strong>
+                  This commit was made after <code class="bg-amber-500/10 px-1 rounded">filter-branch</code> diverged the histories.
+                  It exists only on the <code class="bg-amber-500/10 px-1 rounded">dev</code> branch and has no corresponding commit on
+                  <code class="bg-green-500/10 px-1 rounded text-green-400">main</code>.
+                </p>
+              </div>
+            </div>
+          </Transition>
+        </div>
+      </div>
+
       <!-- Bottom summary -->
       <div class="mt-8 rounded-xl bg-surface-secondary border border-gray-800 p-6 text-center">
         <p class="text-lg font-semibold text-gray-300 mb-2">
-          20 commits. Same code. 20 different SHA hashes.
+          26 commits on dev. 20 shared with main. 6 dev-only. All 20 shared SHAs differ.
         </p>
         <p class="text-sm text-gray-500">
-          Every commit has a different SHA because <code class="text-brand-amber font-mono bg-surface-tertiary px-1 py-0.5 rounded">git filter-branch</code>
+          The first 20 commits have different SHAs because <code class="text-brand-amber font-mono bg-surface-tertiary px-1 py-0.5 rounded">git filter-branch</code>
           rewrote each commit message, and since each child commit hashes its parent's SHA,
-          the change cascaded through the entire history.
+          the change cascaded through the entire history. The 6 additional dev-only commits
+          (UI fixes and features) exist only on <code class="text-brand-amber font-mono bg-surface-tertiary px-1 py-0.5 rounded">dev</code>
+          with no counterpart on <code class="text-brand-green font-mono bg-surface-tertiary px-1 py-0.5 rounded">main</code>.
         </p>
       </div>
     </div>
