@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import store, { allVisibleCommits } from '../../stores/gitStore.js'
 import { computeLayout } from '../../utils/graphLayout.js'
 import CommitNode from './CommitNode.vue'
+import CommitConnection from './CommitConnection.vue'
 
 const selectedCommit = ref(null)
 
@@ -25,18 +26,17 @@ const layout = computed(() =>
       role="img"
       aria-label="Git commit graph visualization"
     >
-      <!-- Connections will be added in Commit 10 -->
+      <!-- Curved connections between commits -->
       <g class="connections">
-        <line
+        <CommitConnection
           v-for="conn in layout.connections"
           :key="conn.id"
-          :x1="conn.fromX"
-          :y1="conn.fromY"
-          :x2="conn.toX"
-          :y2="conn.toY"
-          :stroke="conn.color"
-          stroke-width="2"
-          :opacity="conn.isReplaced ? 0.25 : 0.6"
+          :from-x="conn.fromX"
+          :from-y="conn.fromY"
+          :to-x="conn.toX"
+          :to-y="conn.toY"
+          :color="conn.color"
+          :is-replaced="conn.isReplaced"
         />
       </g>
 
