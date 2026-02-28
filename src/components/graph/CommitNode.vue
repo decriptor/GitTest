@@ -63,17 +63,37 @@ const emit = defineEmits(['select'])
       {{ sha.slice(0, 5) }}
     </text>
 
-    <!-- "amended" badge -->
+    <!-- "amended/new" badge -->
     <g v-if="isAmended && !isReplaced">
       <rect
-        :x="x + 14"
-        :y="y - 28"
-        width="8"
-        height="8"
-        rx="2"
+        :x="x + 12"
+        :y="y - 30"
+        width="16"
+        height="14"
+        rx="3"
         fill="#f59e0b"
       />
+      <text
+        :x="x + 20"
+        :y="y - 22"
+        text-anchor="middle"
+        dominant-baseline="central"
+        class="text-[8px] fill-gray-950 font-bold pointer-events-none"
+      >
+        ★
+      </text>
     </g>
+
+    <!-- Strikethrough for replaced commits -->
+    <line
+      v-if="isReplaced"
+      :x1="x - 20"
+      :y1="y"
+      :x2="x + 20"
+      :y2="y"
+      stroke="rgba(255,255,255,0.4)"
+      stroke-width="2"
+    />
   </g>
 </template>
 
